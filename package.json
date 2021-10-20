@@ -1,0 +1,11 @@
+{
+  "name": "blazingsailsfetcher",
+  "version": "0.0.1",
+  "description": "Simple wrapper around the Blazing Sails rest api",
+  "main": "index.js",
+  "author": "Cheesenibbles123",
+  "license": "ISC",
+  "dependencies": {
+    "node-fetch": "^2.6.1"
+  }
+}
