@@ -9,7 +9,7 @@ const lastFetchedData = {
 	All_Matches_At : 0
 };
 
-const cacheFor = 30000; // 10sec
+const cacheFor = 30000; // 10sec (1800000 = 30min)
 
 module.exports = {
 	getDataFromEndpoint : (URL, endpoint) => {
