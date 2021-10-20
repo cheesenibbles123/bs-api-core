@@ -22,12 +22,12 @@ module.exports = {
 		if (isNaN(parseInt(steamID))){
 			return { isValid : false, content : "Please enter a valid steamID64" };
 		}
-		return getDataFromEndpoint(`${endpoints.SINGLE_PLAYER}?steam_id=${steamID}`);
+		return getDataFromEndpoint(URL,`${endpoints.SINGLE_PLAYER}?steam_id=${steamID}`);
 	},
 	getAllPlayers: () =>{
-		return getDataFromEndpoint(endpoints.ALL_PLAYERS);
+		return getDataFromEndpoint(URL,endpoints.ALL_PLAYERS);
 	},
 	getAllMatches: () =>{
-		return getDataFromEndpoint(endpoints.ALL_MATCHES);
+		return getDataFromEndpoint(URL,endpoints.ALL_MATCHES);
 	}
 }

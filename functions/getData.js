@@ -1,10 +1,12 @@
+const { getMessageFromErrorCode } = require("./getNetworkError");
+
 module.exports = {
-	getDataFromEndpoint: (endpoint) => {
+	getDataFromEndpoint: (URL, endpoint) => {
 		return new Promise((resolve,reject) => {
 			console.log(URL + endpoint);
 			fetch(URL + endpoint).then(resp => resp.text()).then(response => {
 				if (response.contains("<html>")){
-					resolve({ isValid : false, content : "Fetching data error."});
+					resolve({ isValid : false, content : getMessageFromErrorCode(response) }); // Filter for generic networking codes
 				}else{
 					data = JSON.parse(response);
 					resolve({ isValid : true, content : data.content });
