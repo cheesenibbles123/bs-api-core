@@ -1,5 +1,6 @@
 const fetch = require('node-fetch');
 const endpoints = require("./endpoints");
+const { getDataFromEndpoint } = require("./functions/getData");
 
 let URL;
 
@@ -30,20 +31,3 @@ module.exports = {
 		return getDataFromEndpoint(endpoints.ALL_MATCHES);
 	}
 }
-
-function getDataFromEndpoint(endpoint){
-	return new Promise((resolve,reject) => {
-		console.log(URL + endpoint);
-		fetch(URL + endpoint).then(resp => resp.text()).then(response => {
-			if (false){
-				resolve({ isValid : false, content : "Fetching data error."});
-			}else{
-				data = JSON.parse(response);
-				resolve({ isValid : true, content : data.data });
-			}
-		}).catch(error => {
-			resolve({ isValid : false, content : error });
-		})
-	})
-}
-
