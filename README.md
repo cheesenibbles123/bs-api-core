@@ -63,5 +63,7 @@ async function exampleFunction(steamID){
         "total_experience": "99999999",
         "first_seen": "2021-08-23 16:16:52",
         "last_seen": "2021-10-14 16:51:01"
-    }
+    
+    }]
+}
 ```
