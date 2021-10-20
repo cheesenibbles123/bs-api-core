@@ -1,4 +1,5 @@
 const { getMessageFromErrorCode } = require("./getNetworkError");
+const fetch = require('node-fetch');
 
 module.exports = {
 	getDataFromEndpoint: (URL, endpoint) => {
