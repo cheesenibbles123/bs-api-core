@@ -23,6 +23,12 @@ module.exports = {
 		}
 		return getDataFromEndpoint(URL,`${endpoints.SINGLE_PLAYER}?steam_id=${steamID}`);
 	},
+	getSinglePlayerMatches: (steamID) =>{
+		if (isNaN(parseInt(steamID))){
+			return { isValid : false, content : "Please enter a valid steamID64" };
+		}
+		return getDataFromEndpoint(URL,`${endpoints.SINGLE_PLAYER_MATCHES}?steam_id=${steamID}`);
+	},
 	getAllPlayers: () =>{
 		return getDataFromEndpoint(URL,endpoints.ALL_PLAYERS);
 	},
