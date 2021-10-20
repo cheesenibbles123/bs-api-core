@@ -13,8 +13,6 @@ const cacheFor = 30000; // 10sec (1800000 = 30min)
 
 module.exports = {
 	getDataFromEndpoint : (URL, endpoint) => {
-		console.log(new Date().getTime());
-		console.log(lastFetchedData);
 		switch (endpoint){
 			case endpoints.ALL_MATCHES:
 			case endpoints.ALL_PLAYERS:
@@ -37,7 +35,6 @@ function checkCachedData(URL, endpoint){
 
 function getDataFromWeb(URL, endpoint) {
 	return new Promise((resolve,reject) => {
-		console.log(URL + endpoint);
 		fetch(URL + endpoint).then(resp => resp.text()).then(response => {
 			if (response.includes("<html>")){
 				resolve({ isValid : false, content : getMessageFromErrorCode(response) }); // Filter for generic networking codes
