@@ -6,7 +6,7 @@ module.exports = {
 		return new Promise((resolve,reject) => {
 			console.log(URL + endpoint);
 			fetch(URL + endpoint).then(resp => resp.text()).then(response => {
-				if (response.contains("<html>")){
+				if (response.includes("<html>")){
 					resolve({ isValid : false, content : getMessageFromErrorCode(response) }); // Filter for generic networking codes
 				}else{
 					data = JSON.parse(response);
