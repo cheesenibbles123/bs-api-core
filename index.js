@@ -14,7 +14,7 @@ module.exports = {
 			URL = url;
 
 		}else{
-			return { isValud : false, content : "Please enter a string URL input" };
+			return { isValid : false, content : "Please enter a string URL input" };
 		}
 	},
 	getSinglePlayer: (steamID) =>{
