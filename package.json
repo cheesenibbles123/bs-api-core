@@ -3,9 +3,17 @@
   "version": "0.0.1",
   "description": "Simple wrapper around the Blazing Sails rest api",
   "main": "index.js",
-  "author": "Cheesenibbles123",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cheesenibbles123/bs-api-core.git"
+  },
+  "author": "cheesenibbles123",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cheesenibbles123/bs-api-core/issues"
+  },
   "dependencies": {
     "node-fetch": "^2.6.1"
-  }
+  },
+  "homepage": "https://github.com/cheesenibbles123/bs-api-core#readme"
 }
