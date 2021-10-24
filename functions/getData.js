@@ -12,27 +12,27 @@ const lastFetchedData = {
 const cacheFor = 30000; // 10sec (1800000 = 30min)
 
 module.exports = {
-	getDataFromEndpoint : (URL, endpoint) => {
-		return getDataFromWeb(URL, endpoint);
+	getDataFromEndpoint : (URL, apiKey, endpoint) => {
+		return getDataFromWeb(URL, apiKey, endpoint);
 	},
-	getDataFromEndpointAll : (URL, endpoint) => {
-		return checkCachedData(URL, endpoint);
+	getDataFromEndpointAll : (URL, apiKey, endpoint) => {
+		return checkCachedData(URL, apiKey, endpoint);
 	}
 }
 
-function checkCachedData(URL, endpoint){
+function checkCachedData(URL, apiKey, endpoint){
 	if (endpoint === endpoints.ALL_PLAYERS){
 		if ((lastFetchedData.All_Players_At + cacheFor) > new Date().getTime()) return { isValid : true, content : lastFetchedData.All_Players.content};
-		return getAllDataFromWeb(URL, endpoint);
+		return getAllDataFromWeb(URL, apiKey, endpoint);
 	}else if (endpoint === endpoints.ALL_MATCHES){
 		if ((lastFetchedData.All_Matches_At + cacheFor) > new Date().getTime()) return { isValid : true, content : lastFetchedData.All_Matches.content};
-		return getAllDataFromWeb(URL, endpoint);
+		return getAllDataFromWeb(URL, apiKey, endpoint);
 	}
 }
 
-function getAllDataFromWeb(URL, endpoint){
+function getAllDataFromWeb(URL, apiKey, endpoint){
 	return new Promise(async (resolve, reject) => {
-		fetch(URL + endpoint + "?offset=0&length=1").then(resp => resp.text()).then(response => {
+		fetch(`${URL}${endpoint}?api_key=${apiKey}&offset=0&length=1`).then(resp => resp.text()).then(response => {
 			if (response.includes("<html>")){
 				resolve({ isValid : false, content : getMessageFromErrorCode(response) }); // Filter for generic networking codes
 			}else{
@@ -63,9 +63,9 @@ function getAllDataFromWeb(URL, endpoint){
 	});
 }
 
-function getDataFromWeb(URL, endpoint) {
+function getDataFromWeb(URL, apiKey, endpoint) {
 	return new Promise((resolve,reject) => {
-		fetch(URL + endpoint).then(resp => resp.text()).then(response => {
+		fetch(`${URL}${endpoint}?api_key=${apiKey}`).then(resp => resp.text()).then(response => {
 			if (response.includes("<html>")){
 				resolve({ isValid : false, content : getMessageFromErrorCode(response) }); // Filter for generic networking codes
 			}else{
