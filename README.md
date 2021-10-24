@@ -1,6 +1,4 @@
-# Blazing Sails Api Wrapper
-
-(name **TBD**)
+# bs-api-core
 
 ### Implementation
 
