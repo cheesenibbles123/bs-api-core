@@ -1,10 +1,10 @@
 const endpoints = require("./endpoints");
 const { getDataFromEndpoint, getDataFromEndpointAll } = require("./functions/getData");
 
-let URL;
+let URL = "https://blazing-sails.bitnamiapp.com/php_rest_blazingsails/api/post/";
 
 module.exports = {
-	init : (url) => {
+	setURL : (url) => {
 		if (typeof(url) === "string"){
 
 			if ( url[url.length - 1] !== "/"){
