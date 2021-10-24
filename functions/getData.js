@@ -13,32 +13,43 @@ const lastFetchedData = {
 const cacheFor = 30000; // 10sec (1800000 = 30min)
 
 module.exports = {
-	getDataFromEndpoint : (URL, apiKey, endpoint) => {
-		return getDataFromWeb(URL, apiKey, endpoint);
+	setCache: (value) => { // For debug
+		cacheFor = value;
 	},
-	getDataFromEndpointAll : (URL, apiKey, endpoint) => {
-		return checkCachedData(URL, apiKey, endpoint);
+	getDataFromEndpoint : (URL, endpoint) => {
+		return getDataFromWeb(URL, endpoint);
+	},
+	getDataFromEndpointAll : (URL, endpoint) => {
+		return checkCachedData(URL, endpoint);
 	}
 }
 
-function checkCachedData(URL, apiKey, endpoint){
-	if (endpoint === endpoints.ALL_PLAYERS){
+function checkCachedData(URL, endpoint){
+	if (endpoint.includes(endpoints.ALL_PLAYERS)){
 		if ((lastFetchedData.All_Players_At + cacheFor) > new Date().getTime()) return { isValid : true, content : lastFetchedData.All_Players.content};
-		return getAllDataFromWeb(URL, apiKey, endpoint);
-	}else if (endpoint === endpoints.ALL_MATCHES){
+		return getAllDataFromWeb(URL, endpoint);
+	}else if (endpoint.includes(endpoints.ALL_MATCHES)){
 		if ((lastFetchedData.All_Matches_At + cacheFor) > new Date().getTime()) return { isValid : true, content : lastFetchedData.All_Matches.content};
-		return getAllDataFromWeb(URL, apiKey, endpoint);
+		return getAllDataFromWeb(URL, endpoint);
+	}else{
+		return getAllDataFromWeb(URL, endpoint);
 	}
 }
 
-function getAllDataFromWeb(URL, apiKey, endpoint){
+function getAllDataFromWeb(URL, endpoint){
 	return new Promise(async (resolve, reject) => {
-		fetch(`${URL}${endpoint}?${urlParams.API_KEY}=${apiKey}&${urlParams.OFFSET}=0&${urlParams.LENGTH}=1`).then(resp => resp.text()).then(response => {
+		console.log(`${URL}${endpoint}&${urlParams.LENGTH}=1`);
+		console.time("First fetch");
+		fetch(`${URL}${endpoint}&${urlParams.LENGTH}=1`).then(resp => resp.text()).then(response => {
+			console.timeEnd("First fetch");
 			if (response.includes("<html>")){
 				resolve({ isValid : false, content : getMessageFromErrorCode(response) }); // Filter for generic networking codes
 			}else{
 				const totalRows = JSON.parse(response).data.available_row_count;
-				fetch(URL + endpoint + `?${urlParams.OFFSET}=0&${urlParams.LENGTH}=${totalRows}`).then(resp => resp.text()).then(data => {
+				console.log(`${URL}${endpoint}&${urlParams.LENGTH}=${totalRows}`);
+				console.time("Second fetch");
+				fetch(`${URL}${endpoint}&${urlParams.LENGTH}=${totalRows}`).then(resp => resp.text()).then(data => {
+					console.timeEnd("Second fetch");
 					if (data.includes("<html>")){
 						resolve({ isValid : false, content : getMessageFromErrorCode(response) }); // Filter for generic networking codes
 					}else{
@@ -64,9 +75,12 @@ function getAllDataFromWeb(URL, apiKey, endpoint){
 	});
 }
 
-function getDataFromWeb(URL, apiKey, endpoint) {
+function getDataFromWeb(URL, endpoint) {
 	return new Promise((resolve,reject) => {
-		fetch(`${URL}${endpoint}?${urlParams.API_KEY}=${apiKey}`).then(resp => resp.text()).then(response => {
+		console.time("Fetch");
+		console.log(`${URL}${endpoint}`);
+		fetch(`${URL}${endpoint}`).then(resp => resp.text()).then(response => {
+			console.timeEnd("Fetch");
 			if (response.includes("<html>")){
 				resolve({ isValid : false, content : getMessageFromErrorCode(response) }); // Filter for generic networking codes
 			}else{
@@ -74,6 +88,6 @@ function getDataFromWeb(URL, apiKey, endpoint) {
 			}
 		}).catch(error => {
 			resolve({ isValid : false, content : error });
-		})
-	})
+		});
+	});
 }

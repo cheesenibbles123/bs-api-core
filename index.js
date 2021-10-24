@@ -1,6 +1,6 @@
 const endpoints = require("./structs/endpoints");
 const urlParams = require("./structs/urlParams");
-const { getDataFromEndpoint, getDataFromEndpointAll } = require("./functions/getData");
+const { getDataFromEndpoint, getDataFromEndpointAll, setCache } = require("./functions/getData");
 
 let URL = "https://blazing-sails.bitnamiapp.com/php_rest_blazingsails/api/post/";
 let apiKey;
@@ -22,22 +22,25 @@ module.exports = {
 	setApiKey: (newApiKey) => {
 		apiKey = newApiKey;
 	},
+	setCacheTimeout: (newTimeout) => { // For debug
+		setCache(newTimeout);
+	}
 	getSinglePlayer: (steamID) => {
 		if (isNaN(parseInt(steamID))){
 			return { isValid : false, content : "Please enter a valid steamID64" };
 		}
-		return getDataFromEndpoint(URL, apiKey, `${endpoints.SINGLE_PLAYER}?${urlParams.STEAM_ID}=${steamID}`);
+		return getDataFromEndpoint(URL, `${endpoints.SINGLE_PLAYER}?${urlParams.API_KEY}=${apiKey}&${urlParams.STEAM_ID}=${steamID}`);
 	},
 	getSinglePlayerMatches: (steamID) => {
 		if (isNaN(parseInt(steamID))){
 			return { isValid : false, content : "Please enter a valid steamID64" };
 		}
-		return getDataFromEndpoint(URL, apiKey, `${endpoints.SINGLE_PLAYER_MATCHES}?${urlParams.STEAM_ID}=${steamID}`);
+		return getDataFromEndpoint(URL, `${endpoints.SINGLE_PLAYER_MATCHES}?${urlParams.API_KEY}=${apiKey}&${urlParams.STEAM_ID}=${steamID}`);
 	},
 	getAllPlayers: () =>{
-		return getDataFromEndpointAll(URL, apiKey, endpoints.ALL_PLAYERS);
+		return getDataFromEndpointAll(URL, `${endpoints.ALL_PLAYERS}?${urlParams.API_KEY}=${apiKey}&${urlParams.OFFSET}=0`);
 	},
 	getAllMatches: () =>{
-		return getDataFromEndpointAll(URL, apiKey, endpoints.ALL_MATCHES);
+		return getDataFromEndpointAll(URL, `${endpoints.ALL_MATCHES}?${urlParams.API_KEY}=${apiKey}&${urlParams.OFFSET}=0`);
 	}
 }
