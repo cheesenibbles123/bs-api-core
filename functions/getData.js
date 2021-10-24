@@ -1,6 +1,7 @@
 const { getMessageFromErrorCode } = require("./getNetworkError");
 const fetch = require('node-fetch');
-const endpoints = require("./../endpoints");
+const endpoints = require("./../structs/endpoints");
+const urlParams = require("./../structs/urlParams");
 
 const lastFetchedData = {
 	All_Players : {},
@@ -32,12 +33,12 @@ function checkCachedData(URL, apiKey, endpoint){
 
 function getAllDataFromWeb(URL, apiKey, endpoint){
 	return new Promise(async (resolve, reject) => {
-		fetch(`${URL}${endpoint}?api_key=${apiKey}&offset=0&length=1`).then(resp => resp.text()).then(response => {
+		fetch(`${URL}${endpoint}?${urlParams.API_KEY}=${apiKey}&${urlParams.OFFSET}=0&${urlParams.LENGTH}=1`).then(resp => resp.text()).then(response => {
 			if (response.includes("<html>")){
 				resolve({ isValid : false, content : getMessageFromErrorCode(response) }); // Filter for generic networking codes
 			}else{
 				const totalRows = JSON.parse(response).data.available_row_count;
-				fetch(URL + endpoint + `?offset=0&length=${totalRows}`).then(resp => resp.text()).then(data => {
+				fetch(URL + endpoint + `?${urlParams.OFFSET}=0&${urlParams.LENGTH}=${totalRows}`).then(resp => resp.text()).then(data => {
 					if (data.includes("<html>")){
 						resolve({ isValid : false, content : getMessageFromErrorCode(response) }); // Filter for generic networking codes
 					}else{
@@ -65,7 +66,7 @@ function getAllDataFromWeb(URL, apiKey, endpoint){
 
 function getDataFromWeb(URL, apiKey, endpoint) {
 	return new Promise((resolve,reject) => {
-		fetch(`${URL}${endpoint}?api_key=${apiKey}`).then(resp => resp.text()).then(response => {
+		fetch(`${URL}${endpoint}?${urlParams.API_KEY}=${apiKey}`).then(resp => resp.text()).then(response => {
 			if (response.includes("<html>")){
 				resolve({ isValid : false, content : getMessageFromErrorCode(response) }); // Filter for generic networking codes
 			}else{

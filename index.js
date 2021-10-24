@@ -1,4 +1,5 @@
-const endpoints = require("./endpoints");
+const endpoints = require("./structs/endpoints");
+const urlParams = require("./structs/urlParams");
 const { getDataFromEndpoint, getDataFromEndpointAll } = require("./functions/getData");
 
 let URL = "https://blazing-sails.bitnamiapp.com/php_rest_blazingsails/api/post/";
@@ -25,13 +26,13 @@ module.exports = {
 		if (isNaN(parseInt(steamID))){
 			return { isValid : false, content : "Please enter a valid steamID64" };
 		}
-		return getDataFromEndpoint(URL, apiKey, `${endpoints.SINGLE_PLAYER}?steam_id=${steamID}`);
+		return getDataFromEndpoint(URL, apiKey, `${endpoints.SINGLE_PLAYER}?${urlParams.STEAM_ID}=${steamID}`);
 	},
 	getSinglePlayerMatches: (steamID) => {
 		if (isNaN(parseInt(steamID))){
 			return { isValid : false, content : "Please enter a valid steamID64" };
 		}
-		return getDataFromEndpoint(URL, apiKey, `${endpoints.SINGLE_PLAYER_MATCHES}?steam_id=${steamID}`);
+		return getDataFromEndpoint(URL, apiKey, `${endpoints.SINGLE_PLAYER_MATCHES}?${urlParams.STEAM_ID}=${steamID}`);
 	},
 	getAllPlayers: () =>{
 		return getDataFromEndpointAll(URL, apiKey, endpoints.ALL_PLAYERS);
