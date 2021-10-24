@@ -13,24 +13,54 @@ const cacheFor = 30000; // 10sec (1800000 = 30min)
 
 module.exports = {
 	getDataFromEndpoint : (URL, endpoint) => {
-		switch (endpoint){
-			case endpoints.ALL_MATCHES:
-			case endpoints.ALL_PLAYERS:
-				return checkCachedData(URL, endpoint);
-			default:
-				return getDataFromWeb(URL, endpoint);
-		}
+		return getDataFromWeb(URL, endpoint);
+	},
+	getDataFromEndpointAll : (URL, endpoint) => {
+		return checkCachedData(URL, endpoint);
 	}
 }
 
 function checkCachedData(URL, endpoint){
 	if (endpoint === endpoints.ALL_PLAYERS){
 		if ((lastFetchedData.All_Players_At + cacheFor) > new Date().getTime()) return { isValid : true, content : lastFetchedData.All_Players.content};
-		return getDataFromWeb(URL, endpoint);
+		return getAllDataFromWeb(URL, endpoint);
 	}else if (endpoint === endpoints.ALL_MATCHES){
 		if ((lastFetchedData.All_Matches_At + cacheFor) > new Date().getTime()) return { isValid : true, content : lastFetchedData.All_Matches.content};
-		return getDataFromWeb(URL, endpoint);
+		return getAllDataFromWeb(URL, endpoint);
 	}
+}
+
+function getAllDataFromWeb(URL, endpoint){
+	return new Promise(async (resolve, reject) => {
+		fetch(URL + endpoint + "?offset=0&length=1").then(resp => resp.text()).then(response => {
+			if (response.includes("<html>")){
+				resolve({ isValid : false, content : getMessageFromErrorCode(response) }); // Filter for generic networking codes
+			}else{
+				const totalRows = JSON.parse(response).data.available_row_count;
+				fetch(URL + endpoint + `?offset=0&length=${totalRows}`).then(resp => resp.text()).then(data => {
+					if (data.includes("<html>")){
+						resolve({ isValid : false, content : getMessageFromErrorCode(response) }); // Filter for generic networking codes
+					}else{
+						responseData = JSON.parse(data);
+
+						if (endpoint === endpoints.ALL_PLAYERS){
+							lastFetchedData.All_Players = responseData;
+							lastFetchedData.All_Players_At = new Date().getTime();
+						}else if (endpoint === endpoints.ALL_MATCHES){
+							lastFetchedData.All_Matches = responseData;
+							lastFetchedData.All_Matches_At = new Date().getTime();
+						}
+
+						resolve({ isValid : true, content : responseData.content });
+					}
+				}).catch(error => {
+					resolve({ isvalid : false, content : error });
+				});
+			}
+		}).catch(error => {
+			resolve({ isvalid : false, content : error });
+		});
+	});
 }
 
 function getDataFromWeb(URL, endpoint) {
@@ -39,17 +69,7 @@ function getDataFromWeb(URL, endpoint) {
 			if (response.includes("<html>")){
 				resolve({ isValid : false, content : getMessageFromErrorCode(response) }); // Filter for generic networking codes
 			}else{
-				data = JSON.parse(response);
-				console.log(endpoint);
-				if (endpoint === endpoints.ALL_PLAYERS){
-					lastFetchedData.All_Players = data;
-					lastFetchedData.All_Players_At = new Date().getTime();
-				}else if (endpoint === endpoints.ALL_MATCHES){
-					lastFetchedData.All_Matches = data;
-					lastFetchedData.All_Matches_At = new Date().getTime();
-				}
-
-				resolve({ isValid : true, content : data.content });
+				resolve({ isValid : true, content : JSON.parse(response).content });
 			}
 		}).catch(error => {
 			resolve({ isValid : false, content : error });

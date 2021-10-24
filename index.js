@@ -1,5 +1,5 @@
 const endpoints = require("./endpoints");
-const { getDataFromEndpoint } = require("./functions/getData");
+const { getDataFromEndpoint, getDataFromEndpointAll } = require("./functions/getData");
 
 let URL;
 
@@ -30,9 +30,9 @@ module.exports = {
 		return getDataFromEndpoint(URL,`${endpoints.SINGLE_PLAYER_MATCHES}?steam_id=${steamID}`);
 	},
 	getAllPlayers: () =>{
-		return getDataFromEndpoint(URL,endpoints.ALL_PLAYERS);
+		return getDataFromEndpointAll(URL,endpoints.ALL_PLAYERS);
 	},
 	getAllMatches: () =>{
-		return getDataFromEndpoint(URL,endpoints.ALL_MATCHES);
+		return getDataFromEndpointAll(URL,endpoints.ALL_MATCHES);
 	}
 }
