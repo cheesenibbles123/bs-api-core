@@ -22,9 +22,6 @@ module.exports = {
 	setApiKey: (newApiKey) => {
 		apiKey = newApiKey;
 	},
-	setCacheTimeout: (newTimeout) => { // For debug
-		setCache(newTimeout);
-	},
 	getSinglePlayer: (steamID) => {
 		if (isNaN(parseInt(steamID))){
 			return { isValid : false, content : "Please enter a valid steamID64" };
