@@ -32,6 +32,10 @@ exampleFunction('MYSTEAMID64');
 - **getAllPlayers** => Returns the data for all players
 - **getAllMatches** => Returns the data for all matches
 
+**Force**
+
+Each of the above functions has a force alternative to bypass caching and pull direct from server, ***functionName*Force()**, these however can only be used if your auth token has the permission to do so. Otherwise the api will ignore the request.
+
 ### Example Responses
 
 **getSinglePlayer**
