@@ -10,12 +10,9 @@ const lastFetchedData = {
 	All_Matches_At : 0
 };
 
-const cacheFor = 30000; // 10sec (1800000 = 30min)
+const cacheFor = 1800000;
 
 module.exports = {
-	setCache: (value) => { // For debug
-		cacheFor = value;
-	},
 	getDataFromEndpoint : (URL, endpoint) => {
 		return getDataFromWeb(URL, endpoint);
 	},
@@ -38,19 +35,12 @@ function checkCachedData(URL, endpoint){
 
 function getAllDataFromWeb(URL, endpoint){
 	return new Promise(async (resolve, reject) => {
-		console.log(`${URL}${endpoint}&${urlParams.LENGTH}=1`);
-		console.time("First fetch");
 		fetch(`${URL}${endpoint}&${urlParams.LENGTH}=1`).then(resp => resp.text()).then(response => {
-			console.timeEnd("First fetch");
 			if (response.includes("<html>")){
 				resolve({ isValid : false, content : getMessageFromErrorCode(response) }); // Filter for generic networking codes
 			}else{
 				const totalRows = JSON.parse(response).data.available_row_count;
-				console.log(`${URL}${endpoint}&${urlParams.LENGTH}=${totalRows}`);
-				console.time("Second fetch");
 				fetch(`${URL}${endpoint}&${urlParams.LENGTH}=${totalRows}`).then(resp => resp.text()).then(data => {
-					console.timeEnd("Second fetch");
-					//console.log(data);
 					if (data.includes("<html>")){
 						resolve({ isValid : false, content : getMessageFromErrorCode(response) }); // Filter for generic networking codes
 					}else{
@@ -78,16 +68,12 @@ function getAllDataFromWeb(URL, endpoint){
 
 function getDataFromWeb(URL, endpoint) {
 	return new Promise((resolve,reject) => {
-		console.time("Fetch");
-		console.log(`${URL}${endpoint}`);
 		fetch(`${URL}${endpoint}`).then(resp => resp.text()).then(response => {
-			console.timeEnd("Fetch");
 			if (response.includes("<html>")){
 				resolve({ isValid : false, content : getMessageFromErrorCode(response) }); // Filter for generic networking codes
 			}else{
 				const data = JSON.parse(response);
 				if (!data.content && data.data){
-					console.log("TOASTY FORGOT HIS CONTENT FIELD AGAIN.");
 					resolve({ isValid : true, content : data.data });
 				}else{
 					resolve({ isValid : true, content : data.content });
