@@ -46,14 +46,6 @@ function getAllDataFromWeb(URL, endpoint){
 					}else{
 						responseData = JSON.parse(data);
 
-						if (endpoint === endpoints.ALL_PLAYERS){
-							lastFetchedData.All_Players = responseData;
-							lastFetchedData.All_Players_At = new Date().getTime();
-						}else if (endpoint === endpoints.ALL_MATCHES){
-							lastFetchedData.All_Matches = responseData;
-							lastFetchedData.All_Matches_At = new Date().getTime();
-						}
-
 						resolve({ isValid : true, content : responseData.content });
 					}
 				}).catch(error => {
