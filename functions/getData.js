@@ -50,6 +50,7 @@ function getAllDataFromWeb(URL, endpoint){
 				console.time("Second fetch");
 				fetch(`${URL}${endpoint}&${urlParams.LENGTH}=${totalRows}`).then(resp => resp.text()).then(data => {
 					console.timeEnd("Second fetch");
+					//console.log(data);
 					if (data.includes("<html>")){
 						resolve({ isValid : false, content : getMessageFromErrorCode(response) }); // Filter for generic networking codes
 					}else{
@@ -84,7 +85,13 @@ function getDataFromWeb(URL, endpoint) {
 			if (response.includes("<html>")){
 				resolve({ isValid : false, content : getMessageFromErrorCode(response) }); // Filter for generic networking codes
 			}else{
-				resolve({ isValid : true, content : JSON.parse(response).content });
+				const data = JSON.parse(response);
+				if (!data.content && data.data){
+					console.log("TOASTY FORGOT HIS CONTENT FIELD AGAIN.");
+					resolve({ isValid : true, content : data.data });
+				}else{
+					resolve({ isValid : true, content : data.content });
+				}
 			}
 		}).catch(error => {
 			resolve({ isValid : false, content : error });
