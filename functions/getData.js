@@ -27,10 +27,10 @@ function checkCachedData(URL, endpoint, extraData){
 		if ((lastFetchedData.All_Matches_At + cacheFor) > new Date().getTime()) return { isValid : true, content : lastFetchedData.All_Matches.content};
 		return getAllDataFromWeb(URL, endpoint);
 	}else if (endpoint.includes(endpoints.SINGLE_PLAYER)){
-		if (lastFetchedData.Single_Players[extraData.steamId] && (lastFetchedData.Single_Players[extraData.steamId].Player_Info_At + cacheFor) > new Date().getTime()) return { isValid : true, content : lastFetchedData.Single_Players[extraData.steamId].Player_Info};
+		if (lastFetchedData.Single_Players[extraData.steamID] && (lastFetchedData.Single_Players[extraData.steamID].Player_Info_At + cacheFor) > new Date().getTime()) return { isValid : true, content : lastFetchedData.Single_Players[extraData.steamID].Player_Info};
 		return getDataFromWeb(URL, endpoint);
 	}else{
-		if (lastFetchedData.Single_Players[extraData.steamId] && (lastFetchedData.Single_Players[extraData.steamId].Player_Matches_At + cacheFor) > new Date().getTime()) return { isValid : true, content : lastFetchedData.Single_Players[extraData.steamId].Player_Matches};
+		if (lastFetchedData.Single_Players[extraData.steamID] && (lastFetchedData.Single_Players[extraData.steamID].Player_Matches_At + cacheFor) > new Date().getTime()) return { isValid : true, content : lastFetchedData.Single_Players[extraData.steamID].Player_Matches};
 		return getDataFromWeb(URL, endpoint);
 	}
 }
