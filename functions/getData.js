@@ -1,4 +1,4 @@
-const { getMessageFromErrorCode } = require("./getNetworkError");
+const { checkResponse } = require("./checkNetworkResponse");
 const fetch = require('node-fetch');
 const endpoints = require("./../structs/endpoints");
 const urlParams = require("./../structs/urlParams");
@@ -37,16 +37,18 @@ function checkCachedData(URL, endpoint, extraData){
 
 function getAllDataFromWeb(URL, endpoint){
 	return new Promise(async (resolve, reject) => {
-		fetch(`${URL}${endpoint}&${urlParams.LENGTH}=1`).then(resp => resp.text()).then(response => {
-			if (response.includes("<html>")){
-				resolve({ isValid : false, content : getMessageFromErrorCode(response) }); // Filter for generic networking codes
+		fetch(`${URL}${endpoint}&${urlParams.LENGTH}=1`).then(async response => {
+			let checkedResponse = await checkResponse(response);
+			if (!checkedResponse.isValid){
+				resolve(checkedResponse);
 			}else{
-				const totalRows = JSON.parse(response).data.available_row_count;
-				fetch(`${URL}${endpoint}&${urlParams.LENGTH}=${totalRows}`).then(resp => resp.text()).then(data => {
-					if (data.includes("<html>")){
-						resolve({ isValid : false, content : getMessageFromErrorCode(response) }); // Filter for generic networking codes
+				const totalRows = checkedResponse.content.data.available_row_count;
+				fetch(`${URL}${endpoint}&${urlParams.LENGTH}=${totalRows}`).then(async data => {
+					checkedResponse = await checkResponse(data);
+					if (!checkedResponse.isValid){
+						resolve(checkedResponse);
 					}else{
-						responseData = JSON.parse(data);
+						responseData = checkedResponse.content;
 
 						if (endpoint.includes(endpoints.ALL_PLAYERS)){
 							lastFetchedData.All_Players = responseData;
@@ -70,11 +72,12 @@ function getAllDataFromWeb(URL, endpoint){
 
 function getDataFromWeb(URL, endpoint) {
 	return new Promise((resolve,reject) => {
-		fetch(`${URL}${endpoint}`).then(resp => resp.text()).then(response => {
-			if (response.includes("<html>")){
-				resolve({ isValid : false, content : getMessageFromErrorCode(response) }); // Filter for generic networking codes
+		fetch(`${URL}${endpoint}`).then(async response => {
+			const checkedResponse = await checkResponse(response);
+			if (!checkedResponse.isValid){
+				resolve(checkedResponse);
 			}else{
-				let data = JSON.parse(response);
+				let data = checkedResponse.content;
 				if (!data.content && data.data){
 					data = data.data;
 				}else{
@@ -107,7 +110,7 @@ function getDataFromWeb(URL, endpoint) {
 					}
 				}
 
-				resolve({ isValid : true, content : data });
+				resolve({ isValid : data.steam_id !== null ? true : false, content : data.steam_id !== null ? data : "User with given steam_id not found" });
 			}
 		}).catch(error => {
 			resolve({ isValid : false, content : error });
