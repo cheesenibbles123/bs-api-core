@@ -2,7 +2,15 @@ module.exports = {
 	checkResponse: async (response, source) => {
 		if (response.ok && (response.headers.get('content-type') === "application/json")){
 			const jsonResponse = await response.json();
-			return { isValid : jsonResponse.success, content : jsonResponse.content };
+			let obj = {
+				isValid : jsonResponse.success,
+				content : jsonResponse.content
+			}
+
+			if (jsonResponse['data']){
+				obj['data'] = jsonResponse.data;
+			}
+			return obj;
 		}else{
 			return { 
 				isValid : false,
