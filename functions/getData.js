@@ -48,17 +48,15 @@ function getAllDataFromWeb(URL, endpoint){
 					if (!checkedResponse.isValid){
 						resolve(checkedResponse);
 					}else{
-						responseData = checkedResponse.content;
-
 						if (endpoint.includes(endpoints.ALL_PLAYERS)){
-							lastFetchedData.All_Players = responseData;
+							lastFetchedData.All_Players = checkedResponse;
 							lastFetchedData.All_Players_At = new Date().getTime();
 						}else if (endpoint.includes(endpoints.ALL_MATCHES)){
-							lastFetchedData.All_Matches = responseData;
+							lastFetchedData.All_Matches = checkedResponse;
 							lastFetchedData.All_Matches_At = new Date().getTime();
 						}
 
-						resolve({ isValid : true, content : responseData.content });
+						resolve({ isValid : true, content : checkedResponse.content });
 					}
 				}).catch(error => {
 					resolve({ isValid : false, content : error });
