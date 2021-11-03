@@ -37,12 +37,12 @@ function checkCachedData(URL, endpoint, extraData){
 
 function getAllDataFromWeb(URL, endpoint){
 	return new Promise(async (resolve, reject) => {
-		fetch(`${URL}${endpoint}&${urlParams.LENGTH}=1`).then(async response => {
+		fetch(`${URL}${endpoint}&${urlParams.LENGTH}=1`).then(async (response) => {
 			let checkedResponse = await checkResponse(response);
 			if (!checkedResponse.isValid){
 				resolve(checkedResponse);
 			}else{
-				const totalRows = checkedResponse.content.data.available_row_count;
+				const totalRows = checkedResponse.data.available_row_count;
 				fetch(`${URL}${endpoint}&${urlParams.LENGTH}=${totalRows}`).then(async data => {
 					checkedResponse = await checkResponse(data);
 					if (!checkedResponse.isValid){
@@ -61,18 +61,18 @@ function getAllDataFromWeb(URL, endpoint){
 						resolve({ isValid : true, content : responseData.content });
 					}
 				}).catch(error => {
-					resolve({ isvalid : false, content : error });
+					resolve({ isValid : false, content : error });
 				});
 			}
 		}).catch(error => {
-			resolve({ isvalid : false, content : error });
+			resolve({ isValid : false, content : error });
 		});
 	});
 }
 
 function getDataFromWeb(URL, endpoint) {
 	return new Promise((resolve,reject) => {
-		fetch(`${URL}${endpoint}`).then(async response => {
+		fetch(`${URL}${endpoint}`).then(async (response) => {
 			const checkedResponse = await checkResponse(response);
 			if (!checkedResponse.isValid){
 				resolve(checkedResponse);
