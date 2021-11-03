@@ -78,11 +78,6 @@ function getDataFromWeb(URL, endpoint) {
 				resolve(checkedResponse);
 			}else{
 				let data = checkedResponse.content;
-				if (!data.content && data.data){
-					data = data.data;
-				}else{
-					data = data.content;
-				}
 
 				if (endpoint.includes(endpoints.SINGLE_PLAYER)){
 					if (lastFetchedData.Single_Players[data.steam_id]){
